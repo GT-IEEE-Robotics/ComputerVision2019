@@ -49,7 +49,6 @@ def contourBoundWrite(colorMask):
     (contours, _) = cv2.findContours(grayscaledMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     generatedFilename = int(round(time.time() * 1000))
-    
     for currentContour in contours:
         xPosition, yPosition, width, height = cv2.boundingRect(currentContour)
         
@@ -80,13 +79,10 @@ def imageSegment():
         yellowLow = np.uint8([0,100,100])
         yellowHigh = np.uint8([100,255,255])
         yellow = cv2.inRange(segmentedMask, yellowLow, yellowHigh)
-        
+    
         greenMaskBlended = cv2.bitwise_and(currentScene, currentScene, mask = greenMask)
-
         blueMaskBlended = cv2.bitwise_and(currentScene, currentScene, mask = blueMask)
-
         redMaskBlended = cv2.bitwise_and(currentScene, currentScene, mask = redMask)
-
         yellowMaskBlended = cv2.bitwise_and(currentScene, currentScene, mask = yellow)
         
         contourBoundWrite(redMaskBlended)
