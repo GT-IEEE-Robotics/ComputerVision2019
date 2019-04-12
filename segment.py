@@ -3,7 +3,6 @@ import numpy as np
 import time
 
 def rgbySegment(inputImage):
-
     hsv = cv2.cvtColor(inputImage, cv2.COLOR_BGR2HSV)
 
     ######RED RANGE#########
@@ -54,7 +53,7 @@ def extractColor():
     extractionArray2 = np.zeros((4,))
 
     #while True:
-    currentScene = cv2.imread('test2.jpg')
+    currentScene = cv2.imread('test.jpg')
     segmentedMask, redMask, blueMask, greenMask = rgbySegment(currentScene) #, redMask, blueMask, greenMask
     segmentedImage = segmentedMask
 
@@ -78,7 +77,7 @@ def extractColor():
     black = cv2.inRange(segmentedMask, blackLow, blackHigh)
     blackNonZero = cv2.countNonZero(black)
 
-    currentScene = cv2.imread('test2.jpg')
+    currentScene = cv2.imread('test.jpg')
     segmentedMask, redMask, blueMask, greenMask = rgbySegment(currentScene)
     segmentedImage = segmentedMask
 
@@ -130,14 +129,77 @@ def extractColor():
     # cv2.imshow('Blue', blueMask)
     # cv2.imshow("Green", greenMask)
     # cv2.imshow("Red", redMask)
-    cv2.imwrite("image.jpg", currentScene)
-    cv2.imwrite("image2.jpg", outputImageResized)
-    final = cv2.bitwise_and(currentScene, currentScene, mask = greenMask)
-    cv2.imwrite('image3.jpg', final)
-    final = cv2.bitwise_and(currentScene, currentScene, mask = blueMask)
-    cv2.imwrite('image4.jpg', final)
-    final = cv2.bitwise_and(currentScene, currentScene, mask = redMask)
-    cv2.imwrite('image5.jpg', final)
+    # cv2.imwrite("current.jpg", currentScene)
+    # cv2.imwrite("image2.jpg", outputImageResized)
+    greenMasked = cv2.bitwise_and(currentScene, currentScene, mask = greenMask)
+    # cv2.imwrite('green.jpg', final)
+    blueMasked = cv2.bitwise_and(currentScene, currentScene, mask = blueMask)
+    # cv2.imwrite('blue.jpg', final)
+    redMasked = cv2.bitwise_and(currentScene, currentScene, mask = redMask)
+    # cv2.imwrite('red.jpg', final)
+    yellowMasked = cv2.bitwise_and(currentScene, currentScene, mask = yellow)
+    # cv2.imwrite('yellow.jpg', final)
+    
+    imageToCrop = redMasked
+    grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    index = 0
+    for current in contours:
+        x,y,w,h = cv2.boundingRect(current)
+        if w > 50 and h > 50:
+            index += 1
+            croppedImage = imageToCrop[y :y+h, x:x+w]
+            cv2.imwrite(str(index) + '.png', croppedImage)
+    print('redcropped')
+    
+    imageToCrop = greenMasked
+    grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    index = 0
+    for current in contours:
+        x,y,w,h = cv2.boundingRect(current)
+        if w > 50 and h > 50:
+            index += 1
+            croppedImage = imageToCrop[y :y+h, x:x+w]
+            cv2.imwrite(str(index) + '.png', croppedImage)
+    print('greencropped')
+    
+    imageToCrop = blueMasked
+    grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    index = 0
+    for current in contours:
+        x,y,w,h = cv2.boundingRect(current)
+        if w > 50 and h > 50:
+            index += 1
+            croppedImage = imageToCrop[y :y+h, x:x+w]
+            cv2.imwrite(str(index) + '.png', croppedImage)
+    
+    print('bluecropped')
+            
+    # imageToCrop = yellowMasked
+    # grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    # detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    # (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # 
+    # index = 0
+    # for current in contours:
+    #     x,y,w,h = cv2.boundingRect(current)
+    #     if w > 50 and h > 50:
+    #         index += 1
+    #         croppedImage = imageToCrop[y :y+h, x:x+w]
+    #         cv2.imwrite(str(index) + '.png', croppedImage)        
+    # print('yellowcropped')
+    # 
+    # cv2.imshow("im",image)
+    
+    # cv2.waitKey(0)
     # wierd = cv2.Canny(final,100,200)
     # contours = cv2.findContours(wierd, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # rect = cv2.boundingRect(contours[0])
