@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import time
 
+
 def rgbySegment(inputImage):
     hsv = cv2.cvtColor(inputImage, cv2.COLOR_BGR2HSV)
 
@@ -52,7 +53,7 @@ def extractColor():
     extractionArray1 = np.zeros((4,))
     extractionArray2 = np.zeros((4,))
 
-    #while True:
+# while True:
     currentScene = cv2.imread('test.jpg')
     segmentedMask, redMask, blueMask, greenMask = rgbySegment(currentScene) #, redMask, blueMask, greenMask
     segmentedImage = segmentedMask
@@ -140,9 +141,14 @@ def extractColor():
     yellowMasked = cv2.bitwise_and(currentScene, currentScene, mask = yellow)
     # cv2.imwrite('yellow.jpg', final)
     
+    # test = redMasked
+    # test = cv2.resize(test, (600, 600))
+    # cv2.imshow('test',test)
+    # cv2.waitKey(0)
+    
     imageToCrop = redMasked
     grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-    detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    detectedBoundaries = cv2.Canny(imageToCrop, 100, 150)
     (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     index = 0
@@ -154,34 +160,34 @@ def extractColor():
             cv2.imwrite(str(index) + '.png', croppedImage)
     print('redcropped')
     
-    imageToCrop = greenMasked
-    grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-    detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
-    (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    index = 0
-    for current in contours:
-        x,y,w,h = cv2.boundingRect(current)
-        if w > 50 and h > 50:
-            index += 1
-            croppedImage = imageToCrop[y :y+h, x:x+w]
-            cv2.imwrite(str(index) + '.png', croppedImage)
-    print('greencropped')
-    
-    imageToCrop = blueMasked
-    grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-    detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
-    (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    index = 0
-    for current in contours:
-        x,y,w,h = cv2.boundingRect(current)
-        if w > 50 and h > 50:
-            index += 1
-            croppedImage = imageToCrop[y :y+h, x:x+w]
-            cv2.imwrite(str(index) + '.png', croppedImage)
-    
-    print('bluecropped')
+    # imageToCrop = greenMasked
+    # grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    # detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    # (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # 
+    # index = 0
+    # for current in contours:
+    #     x,y,w,h = cv2.boundingRect(current)
+    #     if w > 50 and h > 50:
+    #         index += 1
+    #         croppedImage = imageToCrop[y :y+h, x:x+w]
+    #         cv2.imwrite(str(index) + '.png', croppedImage)
+    # print('greencropped')
+    # 
+    # imageToCrop = blueMasked
+    # grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    # detectedBoundaries = cv2.Canny(imageToCrop, 10, 250)
+    # (contours, _) = cv2.findContours(detectedBoundaries.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # 
+    # index = 0
+    # for current in contours:
+    #     x,y,w,h = cv2.boundingRect(current)
+    #     if w > 50 and h > 50:
+    #         index += 1
+    #         croppedImage = imageToCrop[y :y+h, x:x+w]
+    #         cv2.imwrite(str(index) + '.png', croppedImage)
+    # 
+    # print('bluecropped')
             
     # imageToCrop = yellowMasked
     # grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
