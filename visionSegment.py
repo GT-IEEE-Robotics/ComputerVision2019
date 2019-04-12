@@ -43,6 +43,21 @@ def colorMasks(inputImage):
 
     return blendedMask, redMask, blueMask, greenMask
 
+def contourBoundWrite(colorMask):
+    imageToCrop = colorMask
+    grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
+    (contours, _) = cv2.findContours(grayscaledMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    generatedFilename = int(round(time.time() * 1000))
+    
+    for currentContour in contours:
+        xPosition, yPosition, width, height = cv2.boundingRect(currentContour)
+        
+        if width > 60 and height > 60:
+            generatedFilename += 1
+            croppedImage = imageToCrop[yPosition: yPosition + height, xPosition: xPosition + width]
+            cv2.imwrite(str(generatedFilename) + '.png', croppedImage)
+
 def imageSegment():
     imageFiles = glob.glob("images/*.jpg")
     images = [cv2.imread(currentImage) for currentImage in imageFiles]
@@ -74,69 +89,10 @@ def imageSegment():
 
         yellowMaskBlended = cv2.bitwise_and(currentScene, currentScene, mask = yellow)
         
-        ###Cropping Red###
-        imageToCrop = redMaskBlended
-        grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-        (contours, _) = cv2.findContours(grayscaledMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
-        generatedFilename = int(round(time.time() * 1000))
-        
-        for currentContour in contours:
-            xPosition, yPosition, width, height = cv2.boundingRect(currentContour)
-            
-            if width > 60 and height > 60:
-                generatedFilename += 1
-                croppedImage = imageToCrop[yPosition: yPosition + height, xPosition: xPosition + width]
-                cv2.imwrite(str(generatedFilename) + '.png', croppedImage)
-        print('Red Cropped')
-        
-        ###Cropping Green###
-        imageToCrop = greenMaskBlended
-        grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-        (contours, _) = cv2.findContours(grayscaledMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
-        generatedFilename = int(round(time.time() * 1000))
-        
-        for currentContour in contours:
-            xPosition, yPosition, width, height = cv2.boundingRect(currentContour)
-            
-            if width > 60 and height > 60:
-                generatedFilename += 1
-                croppedImage = imageToCrop[yPosition: yPosition + height, xPosition: xPosition + width]
-                cv2.imwrite(str(generatedFilename) + '.png', croppedImage)
-        print('Green Cropped')
-        
-        ###Cropping Blue###
-        imageToCrop = blueMaskBlended
-        grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-        (contours, _) = cv2.findContours(grayscaledMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
-        generatedFilename = int(round(time.time() * 1000))
-        
-        for currentContour in contours:
-            xPosition, yPosition, width, height = cv2.boundingRect(currentContour)
-            
-            if width > 60 and height > 60:
-                generatedFilename += 1
-                croppedImage = imageToCrop[yPosition: yPosition + height, xPosition: xPosition + width]
-                cv2.imwrite(str(generatedFilename) + '.png', croppedImage)
-        print('Blue Cropped')
-        
-        ###Cropping Yellow###
-        imageToCrop = yellowMaskBlended
-        grayscaledMask = cv2.cvtColor(imageToCrop, cv2.COLOR_BGR2GRAY)
-        (contours, _) = cv2.findContours(grayscaledMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
-        generatedFilename = int(round(time.time() * 1000))
-        
-        for currentContour in contours:
-            xPosition, yPosition, width, height = cv2.boundingRect(currentContour)
-            
-            if width > 60 and height > 60:
-                generatedFilename += 1
-                croppedImage = imageToCrop[yPosition: yPosition + height, xPosition: xPosition + width]
-                cv2.imwrite(str(generatedFilename) + '.png', croppedImage)
-        print('Yellow Cropped')
+        contourBoundWrite(redMaskBlended)
+        contourBoundWrite(greenMaskBlended)
+        contourBoundWrite(blueMaskBlended)
+        contourBoundWrite(yellowMaskBlended)
         
 if __name__=="__main__":
     imageSegment()
