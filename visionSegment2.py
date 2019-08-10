@@ -38,10 +38,10 @@ def colorMasks(inputImage):
     # blueMask = cv2.inRange(hsv, blueLow, blueHigh)
 
     #Merged Mask
-    rgbyMask = greenMask + redMask + yellowMaskBlended + blueMask
-    blendedMask = cv2.bitwise_and(inputImage, inputImage, mask = rgbyMask)
+    # rgbyMask = greenMask + redMask + yellowMaskBlended + blueMask
+    # blendedMask = cv2.bitwise_and(inputImage, inputImage, mask = rgbyMask)
 
-    return blendedMask, redMask, blueMask, greenMask
+    return redMask
 
 def contourBoundWrite(colorMask, currentScene):
     imageToCrop = colorMask
